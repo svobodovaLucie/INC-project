@@ -46,44 +46,43 @@ begin
     
     process (CLK) begin
         if rising_edge(CLK) then
-              if dread = '0' then
-                  bit_cnt <= "0000";
-              end if;
-    
+          
+            -- pokud neni dread aktivovan, pocitadlo bitu je vynulovano
+            if dread = '0' then
+                bit_cnt <= "0000";
+            end if;
+            
             -- pokud je aktivovan citac hodinoveho signalu, inkrementujeme ho
             if clk_cnt_en = '1' then
                 clk_cnt <= clk_cnt + 1;
-            else 
+            else
                 clk_cnt <= "00000";
             end if;
             
             -- pokud jsme ve stavu cteni dat
             if dread = '1' then
-                -- pokud je clk_cnt > 15, vynulujeme jej a zapiseme nactený bit na DOUT
-                if bit_cnt(3) = '1' then
-                    clk_cnt <= "00000";
-                    --DOUT(to_integer(unsigned(bit_cnt))) <= DIN;
-                    --bit_cnt <= bit_cnt + 1;
-                else 
-                  if clk_cnt(4) = '1' then
-                  --if clk_cnt = "010000" then
-                    clk_cnt <= "00000";
-                    DOUT(to_integer(unsigned(bit_cnt))) <= DIN;   -- zapis nacteneho bitu na vystup
+                if clk_cnt (4) = '1' then
+                    DOUT(to_integer(unsigned(bit_cnt))) <= DIN;
                     bit_cnt <= bit_cnt + 1;
-                  end if;
-              end if;
-            end if;
+                    clk_cnt <= "00000";
+                end if;
+                if clk_cnt = "10000" then
+                    DOUT(to_integer(unsigned(bit_cnt))) <= DIN;
+                    bit_cnt <= bit_cnt + 1;
+                    clk_cnt <= "00000";
+                end if;
+            end if;  
             
             -- pokud cekame na stop bit, cekame, nez DIN vysle log.1
-            if stop_bit_w = '1' then
                 -- pokud DIN vyslala 1, tedy stop bit, muzeme se prepnout do dalsiho stavu
+            if stop_bit_w = '1' then
                 if DIN = '1' then
                     stop_bit_en <= '1';
                 else
                     stop_bit_en <= '0';
                 end if;
             end if;
-            
+            -- pokud jsme ve stavu DATA_VALID, vysleme DOUT_VLD
             if dvalid = '1' then
                 DOUT_VLD <= '1';
             else
