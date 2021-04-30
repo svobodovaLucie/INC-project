@@ -23,7 +23,6 @@ signal clk_cnt    : std_logic_vector(4 downto 0);   -- citac hodinovych signalu
 signal bit_cnt    : std_logic_vector(3 downto 0);   -- citac bitu (pouzity pri DATA_READ)
 signal clk_cnt_en : std_logic;                      -- indikace, zda je aktivovan citac hodinoveho signalu
 signal dread      : std_logic;                      -- indikace, zda je aktivovan rezim cteni dat
-signal D_VLD      : std_logic;                      -- indikace, zda je nastaven DOUT_VLD
 signal stop_bit_w : std_logic;                      -- indikace, ze cekame na stop bit
 signal stop_bit_en: std_logic;                      -- indikace, ze byl stop bit detekovan
 signal dvalid     : std_logic;                      -- indikace, ze dvalid ma byt nastaven
